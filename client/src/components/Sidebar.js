@@ -12,7 +12,9 @@ export default function Sidebar({ id }) {
     const [activeKey, setActiveKey] = useState(CONVERSATIONS_KEY)
     const [modalOpen, setModalOpen] = useState(false)
     const conversationsOpen = activeKey === CONVERSATIONS_KEY
-    
+    console.log(id)
+
+
     const closeModal = () => {
         setModalOpen(false)
     }

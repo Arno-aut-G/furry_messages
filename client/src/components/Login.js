@@ -28,3 +28,25 @@ export default function Login({ onIdSubmit }) {
         </Container>
     )
 }
+
+// const handleSubmit = (e) => {
+//     e.preventDefault()
+// send the data to the database, verify it, receive a token, store it in the ls, and store the id there
+//     onIdSubmit(idRef.current.value)
+// }
+
+
+// return (
+//     <Container className='align-items-center d-flex' style={{ height:'100vh' }}>
+//         <Form onSubmit={handleSubmit} className='w-100'>
+//             <Form.Group>
+//                 <Form.Label>Username</Form.Label>
+//                 <Form.Control type='text' ref={idRef} required/>
+//                 <Form.Label>Password</Form.Label>
+//                 <Form.Control type='text' ref={idRef} required/>
+//             </Form.Group>
+//             <Button type='submit' className='mr-2'>Login</Button>
+//             <Button onClick={createNewId} variant='secondary'>Create a new ID</Button>
+//         </Form>
+//     </Container>
+// )
