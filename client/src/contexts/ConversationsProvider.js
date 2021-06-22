@@ -57,7 +57,7 @@ export function ConversationsProvider( { id, children } ) {
     }, [setConversations])
 
     useEffect(() => {
-        if (socket === null) return
+        if (!socket) return
 
         socket.on('receive-message', addMessageToConversation)
 
@@ -114,5 +114,7 @@ const arrayEquality = (a, b) => {
     a.sort()
     b.sort()
 
-    return a.every((e, i) => e === b[i])
+    return a.every((element, index) => {
+        return element === b[index]
+      })
 }
