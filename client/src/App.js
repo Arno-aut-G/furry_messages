@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Login from './components/Login'
 import Dashboard from './components/Dashboard'
 import useLocalStorage from './hooks/useLocalStorage';
@@ -6,7 +7,9 @@ import { ConversationsProvider } from './contexts/ConversationsProvider'
 import { SocketProvider } from './contexts/SocketProvider';
 
 function App() {
-  const [id, setId] = useLocalStorage('id', null)
+  const [id, setId] = useLocalStorage('idusername', null)
+  const [token, setToken] = useLocalStorage('token', null)
+  //reminder: id = {_id, username}
   console.log(id)
 
 
@@ -21,9 +24,9 @@ function App() {
   )
 
   return (
-    
-      id ? dashboard : <Login onIdSubmit={setId}/>
-    
+   
+      !id ? <Login onIdSubmit={setId} setToken={setToken} /> : dashboard
+
   );
 }
 

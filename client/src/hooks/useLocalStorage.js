@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 
 //this is for being able to identify to which app the information in localStorage belongs to
-const PREFIX = 'komunikate_messenger-'
+const PREFIX = 'komunikate_messenger_'
 
 
 export default function useLocalStorage(key, initialValue) {

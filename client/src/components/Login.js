@@ -1,52 +1,63 @@
-import {useRef} from 'react'
+import { useRef } from 'react'
 import { Container, Form, Button } from 'react-bootstrap'
-import { v4 as uuidV4 } from 'uuid'
+//import { useHistory } from 'react-router-com'
+import queryString from 'querystring'
+import jwt_decode from 'jwt-decode'
+import useLocalStorage from '../hooks/useLocalStorage'
+import axios from 'axios'
+const PORT = process.env.PORT || 'http://localhost:3002'
 
-export default function Login({ onIdSubmit }) {
-    const idRef = useRef()
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+const Login = ({ onIdSubmit, setToken }) => {
 
-        onIdSubmit(idRef.current.value)
-    }
+        const eMailRef = useRef()
+        const passWordRef = useRef()
+    
+        const handleSubmit = (e) => {
+            e.preventDefault()
 
-    const createNewId = () => {
-        onIdSubmit(uuidV4())
-    }
+            let user = {
+                email: eMailRef.current.value,
+                password: passWordRef.current.value
+            }
+
+            console.log(user)
+
+            axios
+                .post(`${PORT}/login`, queryString.stringify(user))    
+                .then(res => {             
+                    const auth_token = res.data
+                    console.log(auth_token)
+                    const decoded = jwt_decode(auth_token)
+                    console.log(decoded)
+                    const idUsername = (({_id, username}) => ({_id, username}))(decoded.user)
+                    console.log(idUsername)
+                    onIdSubmit(idUsername)
+                    setToken(auth_token)
+            }).catch(err => {
+                console.log(err)
+            })
+        }
 
     return (
-        <Container className='align-items-center d-flex' style={{ height:'100vh' }}>
-            <Form onSubmit={handleSubmit} className='w-100'>
-                <Form.Group>
-                    <Form.Label>Enter your ID</Form.Label>
-                    <Form.Control type='text' ref={idRef} required/>
-                </Form.Group>
-                <Button type='submit' className='mr-2'>Login</Button>
-                <Button onClick={createNewId} variant='secondary'>Create a new ID</Button>
-            </Form>
-        </Container>
+    <Container className='align-items-center d-flex' style={{ height:'100vh' }}>
+        <Form onSubmit={handleSubmit} className='w-100'>
+            <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control type="email" placeholder="Enter email" ref={eMailRef} required/>
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" placeholder="Password" ref={passWordRef} required/>
+            </Form.Group>
+            <Button type='submit' className='mr-2'>Login</Button>
+        </Form>
+    </Container>
     )
+
+
 }
 
-// const handleSubmit = (e) => {
-//     e.preventDefault()
-// send the data to the database, verify it, receive a token, store it in the ls, and store the id there
-//     onIdSubmit(idRef.current.value)
-// }
+export default Login
 
 
-// return (
-//     <Container className='align-items-center d-flex' style={{ height:'100vh' }}>
-//         <Form onSubmit={handleSubmit} className='w-100'>
-//             <Form.Group>
-//                 <Form.Label>Username</Form.Label>
-//                 <Form.Control type='text' ref={idRef} required/>
-//                 <Form.Label>Password</Form.Label>
-//                 <Form.Control type='text' ref={idRef} required/>
-//             </Form.Group>
-//             <Button type='submit' className='mr-2'>Login</Button>
-//             <Button onClick={createNewId} variant='secondary'>Create a new ID</Button>
-//         </Form>
-//     </Container>
-// )
+
+
