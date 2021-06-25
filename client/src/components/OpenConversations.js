@@ -5,7 +5,7 @@ import { useConversations } from '../contexts/ConversationsProvider'
 export default function OpenConversations() {
     const textRef = useRef()
     const [text, setText] = useState('')
-    const setRef = useCallback(node => {
+    const setRef = useCallback(node => {  //i'd like to change this to a useRef!!
         if (node){
         node.scrollIntoView({ smooth: true})
     }

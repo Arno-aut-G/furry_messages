@@ -1,23 +1,22 @@
-import { useState } from 'react'
 import Login from './components/Login'
 import Dashboard from './components/Dashboard'
 import useLocalStorage from './hooks/useLocalStorage';
-import { ContactsProvider} from './contexts/ContactsProvider'
+import { ContactsProvider } from './contexts/ContactsProvider'
 import { ConversationsProvider } from './contexts/ConversationsProvider'
 import { SocketProvider } from './contexts/SocketProvider';
 
 function App() {
-  const [id, setId] = useLocalStorage('idusername', null)
+  const [idUser, setIdUser] = useLocalStorage('idusername', null)
   const [token, setToken] = useLocalStorage('token', null)
-  //reminder: id = {_id, username}
-  console.log(id)
+  //reminder: idUser = {_id, username}
+  console.log(idUser)
 
 
   const dashboard = (
-      <SocketProvider id={id}>
+      <SocketProvider idUser={idUser}>
        <ContactsProvider >
-          <ConversationsProvider id={id}>
-            <Dashboard id={id}/>
+          <ConversationsProvider idUser={idUser}>
+            <Dashboard idUser={idUser}/>
           </ConversationsProvider>
         </ContactsProvider>
       </SocketProvider>
@@ -25,7 +24,7 @@ function App() {
 
   return (
    
-      !id ? <Login onIdSubmit={setId} setToken={setToken} /> : dashboard
+      !idUser ? <Login onIdSubmit={setIdUser} setToken={setToken} /> : dashboard
 
   );
 }

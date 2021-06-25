@@ -1,9 +1,7 @@
 import { useRef } from 'react'
 import { Container, Form, Button } from 'react-bootstrap'
-//import { useHistory } from 'react-router-com'
 import queryString from 'querystring'
 import jwt_decode from 'jwt-decode'
-import useLocalStorage from '../hooks/useLocalStorage'
 import axios from 'axios'
 const PORT = process.env.PORT || 'http://localhost:3002'
 

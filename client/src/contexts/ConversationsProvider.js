@@ -1,20 +1,46 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react'
+import { useContext, useState, useEffect, useCallback, createContext } from 'react'
 import useLocalStorage from '../hooks/useLocalStorage'
 import { useContacts } from './ContactsProvider'
 import { useSocket } from './SocketProvider'
 
-const ConversationsContext = React.createContext()
+const PORT = process.env.PORT || 'http://localhost:3002'
+
+const ConversationsContext = createContext()
 
 export const useConversations = () => {
     return useContext(ConversationsContext)
 }
 
-export function ConversationsProvider( { id, children } ) {
+export function ConversationsProvider( { idUser, children } ) {
     const [conversations, setConversations] = useLocalStorage('conversations', [])
     const [selectedConversationIndex, setSelectedConversationIndex] = useState(0)
     const { contacts } = useContacts()
     const socket = useSocket()
     console.log(socket)
+    console.log(conversations)
+    const id = idUser._id
+
+    //TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // const getConversations = () => { //I will need the conversations that are attached to the specific user, i.e. where the use either is the sender or one of the recipients, i.e. all the messages that pertain to the room-id of the user
+    //         axios
+    //                     .get(`${PORT}/`,
+    //                         {
+    //                             headers: {
+    //                                 'auth-token': JSON.parse(localStorage.komunikate_messenger_token), //useLocalStorage, the legit npm version
+    //                                 'Content-Type': 'application/x-www-form-urlencoded'
+    //                             }
+    //                         }
+    //                     )
+    //                     .then(res => {
+    //                         console.log(res)
+    //                         setConversations(conversations)
+    //                     })
+    //                     .catch(err => {
+    //                         console.log(err)
+    //                     })
+    // }
+    
+
 
 
     const createConversation = (recipients) => {
@@ -25,7 +51,7 @@ export function ConversationsProvider( { id, children } ) {
 
     //this function is called when we send messages to other people, but also from the server when we receive a message >> taking messages from sender but also taking messages from others
     //here, the main action of the app happens
-    //THIS GONNA BE USECALLBACK
+    //THIS GONNA BE USECALLBACK, because we don't want this function to be rebuild on every rerender
     const addMessageToConversation = useCallback(({ recipients, text, sender }) => {
         setConversations(prevConversations => {
             let madeChange = false //evaluates whether a new conversations has to be created or whethe the message is to be added to an existing conversation (if false, create; if true, add)
@@ -69,6 +95,10 @@ export function ConversationsProvider( { id, children } ) {
 
         addMessageToConversation({ recipients, text, sender: id})
     }
+
+    useEffect(() => {
+        //getting conversations from database!!
+    })
 
     //recipient is only an id. we also want to get the name of the recipient
     const formattedConversations = conversations.map((conversation, index) => {

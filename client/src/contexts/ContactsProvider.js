@@ -1,9 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, createContext } from 'react'
 import useLocalStorage from '../hooks/useLocalStorage'
 import axios from 'axios'
 const PORT = process.env.PORT || 'http://localhost:3002'
 
-const ContactsContext = React.createContext()
+const ContactsContext = createContext()
 
 export const useContacts = () => {
     return useContext(ContactsContext)
@@ -11,6 +11,7 @@ export const useContacts = () => {
 
 export function ContactsProvider( {children} ) {
     const [contacts, setContacts] = useState([])
+    const [queryString, setQueryString] = useState('')
 
     // const [contacts, setContacts] = useLocalStorage('contacts', [])
 
@@ -21,15 +22,17 @@ export function ContactsProvider( {children} ) {
     // }
 
     console.log(localStorage.komunikate_messenger_token)
+    
 
-    const usersGet = () => {
+    const usersGet = (queryString) => { 
         axios
                     .get(`${PORT}/users`,
                         {
                             headers: {
-                                'auth-token': localStorage.komunikate_messenger_token
+                                'auth-token': JSON.parse(localStorage.komunikate_messenger_token), //useLocalStorage, the legit npm version
+                                'Content-Type': 'application/x-www-form-urlencoded'
                             }
-                        }
+                        }, queryString
                     )
                     .then(res => {
                         console.log(res)
@@ -45,39 +48,10 @@ export function ContactsProvider( {children} ) {
         
 
     useEffect(() => {
-        usersGet()
+        usersGet(queryString)
     }, [])
 
     
-
-    // export const categoryCreate = async (categoryToCreate) => {
-    //     try {
-    //       const response = await axios.post(
-    //         `${apiUrl}categories/add_category`,
-    //         categoryToCreate,
-    //         {
-    //           headers: {
-    //             "auth-token": localStorage.usertoken,
-    //           },
-    //         }
-    //       );
-    //       return response.data;
-    //     } catch (error) {
-    //       console.error(error.response.data);
-    //       alert(error.response.data);
-    //     }
-    //   };
-
-    // axios
-    //         .get(`${PORT}/users`)
-    //         .then(res => {
-    //             let contacts = res.data.users.map(({_id, username}) => ({_id, username}))
-    //             console.log(contacts)
-    //             setContacts(contacts)
-    //         })
-    //         .catch(err => {
-    //             console.log(err)
-    //         })
 
     return (
         <ContactsContext.Provider value={{ contacts }}>

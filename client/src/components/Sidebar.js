@@ -6,15 +6,15 @@ import Contacts from './Contacts'
 const CONVERSATIONS_KEY = 'conversations'
 const CONTACTS_KEY = 'contacts'
 
-export default function Sidebar({ id }) {
+export default function Sidebar({ idUser }) {
     const [activeKey, setActiveKey] = useState(CONVERSATIONS_KEY)
     //const conversationsOpen = activeKey === CONVERSATIONS_KEY //check whether conversion tab is open
-    console.log(id)
+    console.log(idUser)
 
 
 
     return (
-        <div style={{ width: '250px'}} className='d-flex flex-column'>
+        <div style={{ width: '400px'}} className='d-flex flex-column'>
             <Tab.Container activeKey={activeKey} onSelect={setActiveKey}>
                 <Nav variant='tabs' className='justify-content-center'>
                     <Nav.Item>
@@ -34,7 +34,7 @@ export default function Sidebar({ id }) {
                     </Tab.Pane>
                 </Tab.Content>
                 <div className='p-2 border border-top border-right small'>
-                    Username: <span className='text-muted'>{id.username}</span>
+                    Username: <span className='text-muted'>{idUser.username}</span>
                 </div>
             </Tab.Container>
         </div>

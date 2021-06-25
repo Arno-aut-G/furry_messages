@@ -5,9 +5,12 @@ const io = require('socket.io')(5000, {
 })
 
 
-io.on('connection', socket => {
+io.on('connection', (socket) => {
+  console.log(socket)
   const id = socket.handshake.query.id
   socket.join(id)
+
+  console.log(`${socket.id} connected`)
 
   socket.on('send-message', ({ recipients, text }) => {
     recipients.forEach(recipient => {
@@ -16,7 +19,14 @@ io.on('connection', socket => {
       socket.broadcast.to(recipient).emit('receive-message', {
         recipients: newRecipients, sender: id, text
       })
+
     })
+  } // add to database here?
+  )
+
+  socket.on("disconnect", () => {
+    console.log(`User disconnected`)
   })
+
 })
 
