@@ -6,7 +6,6 @@ const io = require('socket.io')(5000, {
 
 
 io.on('connection', (socket) => {
-  console.log(socket)
   const id = socket.handshake.query.id
   socket.join(id)
 
@@ -21,7 +20,7 @@ io.on('connection', (socket) => {
       })
 
     })
-  } // add to database here?
+  } // add to database here? >> done on Komunikate_Back
   )
 
   socket.on("disconnect", () => {

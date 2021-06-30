@@ -39,7 +39,7 @@ export default function OpenConversations() {
                                     {message.text}
                                 </div>
                                 <div className={`text-muted small ${message.fromMe ? 'text-right' : ''}`}>
-                                    {message.fromMe ? 'You' : message.sender.name}
+                                    {message.fromMe ? 'You' : message.senderName}
                                 </div>
                             </div>
                         )

@@ -14,8 +14,8 @@ function App() {
 
   const dashboard = (
       <SocketProvider idUser={idUser}>
-       <ContactsProvider >
-          <ConversationsProvider idUser={idUser}>
+       <ContactsProvider token={token}>
+          <ConversationsProvider idUser={idUser} token={token}>
             <Dashboard idUser={idUser}/>
           </ConversationsProvider>
         </ContactsProvider>
@@ -24,7 +24,7 @@ function App() {
 
   return (
    
-      !idUser ? <Login onIdSubmit={setIdUser} setToken={setToken} /> : dashboard
+      !idUser && !token ? <Login onIdSubmit={setIdUser} setToken={setToken} /> : dashboard
 
   );
 }

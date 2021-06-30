@@ -47,6 +47,7 @@ export default function Contacts() {
             <Form.Group>
                 <Form.Label>By Language</Form.Label>
                 <Form.Control as="select">
+                    <option value=''></option>
                     <option>English</option>
                     <option>German</option>
                     <option>Spanish</option>
@@ -55,6 +56,7 @@ export default function Contacts() {
                 </Form.Control>
                 <Form.Label>By City</Form.Label>
                 <Form.Control as="select">
+                    <option value=''></option>
                     <option>Berlin</option>
                     <option>Frankfurt am Main</option>
                     <option>Hamburg</option>
@@ -63,7 +65,7 @@ export default function Contacts() {
                 </Form.Control>
                 </Form.Group>
                 <Button type="submit">
-                    Submit
+                    Search
                 </Button> 
         </ Form>
         <Form onSubmit={handleSubmit}>

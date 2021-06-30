@@ -9,7 +9,7 @@ export const useContacts = () => {
     return useContext(ContactsContext)
 }
 
-export function ContactsProvider( {children} ) {
+export function ContactsProvider( { token, children} ) {
     const [contacts, setContacts] = useState([])
     const [queryString, setQueryString] = useState('')
 
@@ -29,7 +29,7 @@ export function ContactsProvider( {children} ) {
                     .get(`${PORT}/users`,
                         {
                             headers: {
-                                'auth-token': JSON.parse(localStorage.komunikate_messenger_token), //useLocalStorage, the legit npm version
+                                'auth-token': token, //useLocalStorage, the legit npm version
                                 'Content-Type': 'application/x-www-form-urlencoded'
                             }
                         }, queryString
@@ -43,18 +43,19 @@ export function ContactsProvider( {children} ) {
                     .catch(err => {
                         console.log(err)
                     })
+                    
         }
         
         
 
     useEffect(() => {
-        usersGet(queryString)
-    }, [])
+        if (token) usersGet(queryString);
+    }, [token])
 
     
 
     return (
-        <ContactsContext.Provider value={{ contacts }}>
+        <ContactsContext.Provider value={{ contacts, setQueryString }}>
             {children}
         </ContactsContext.Provider>
     )

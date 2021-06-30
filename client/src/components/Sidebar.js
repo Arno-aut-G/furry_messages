@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Tab, Nav } from 'react-bootstrap'
+import { Tab, Nav, Container, Row, Col } from 'react-bootstrap'
 import Conversations from './Conversations'
 import Contacts from './Contacts'
 
@@ -14,8 +14,8 @@ export default function Sidebar({ idUser }) {
 
 
     return (
-        <div style={{ width: '400px'}} className='d-flex flex-column'>
-            <Tab.Container activeKey={activeKey} onSelect={setActiveKey}>
+        <div style={{ width: '500px'}} className='d-flex flex-column'>
+           <Tab.Container activeKey={activeKey} onSelect={setActiveKey}>
                 <Nav variant='tabs' className='justify-content-center'>
                     <Nav.Item>
                         <Nav.Link eventKey={CONVERSATIONS_KEY}>Conversations</Nav.Link>
@@ -42,3 +42,4 @@ export default function Sidebar({ idUser }) {
        
     )
 }
+

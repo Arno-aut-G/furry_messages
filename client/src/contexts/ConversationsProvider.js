@@ -1,7 +1,9 @@
 import { useContext, useState, useEffect, useCallback, createContext } from 'react'
+import axios from 'axios'
 import useLocalStorage from '../hooks/useLocalStorage'
 import { useContacts } from './ContactsProvider'
 import { useSocket } from './SocketProvider'
+import { array } from 'prop-types'
 
 const PORT = process.env.PORT || 'http://localhost:3002'
 
@@ -11,7 +13,7 @@ export const useConversations = () => {
     return useContext(ConversationsContext)
 }
 
-export function ConversationsProvider( { idUser, children } ) {
+export function ConversationsProvider( { token, idUser, children } ) { 
     const [conversations, setConversations] = useLocalStorage('conversations', [])
     const [selectedConversationIndex, setSelectedConversationIndex] = useState(0)
     const { contacts } = useContacts()
@@ -20,25 +22,37 @@ export function ConversationsProvider( { idUser, children } ) {
     console.log(conversations)
     const id = idUser._id
 
-    //TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // const getConversations = () => { //I will need the conversations that are attached to the specific user, i.e. where the use either is the sender or one of the recipients, i.e. all the messages that pertain to the room-id of the user
-    //         axios
-    //                     .get(`${PORT}/`,
-    //                         {
-    //                             headers: {
-    //                                 'auth-token': JSON.parse(localStorage.komunikate_messenger_token), //useLocalStorage, the legit npm version
-    //                                 'Content-Type': 'application/x-www-form-urlencoded'
-    //                             }
-    //                         }
-    //                     )
-    //                     .then(res => {
-    //                         console.log(res)
-    //                         setConversations(conversations)
-    //                     })
-    //                     .catch(err => {
-    //                         console.log(err)
-    //                     })
-    // }
+    const getConversations = () => { 
+             axios
+                         .get(`${PORT}/conversations/ind`,
+                             {
+                                 headers: {
+                                    'auth-token': token,
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                 }
+                             }
+                         )
+                         .then(res => {
+                            if (Array.isArray(res.data)) {                         
+                             const newConversations = res.data.map(el => {
+                                const recipients = el.participants.filter(p => p !== id)
+                                const messages = el.messages
+                                return { recipients, messages }
+                            })
+                            setConversations(newConversations)
+                            }
+                         })
+                         .catch(err => {
+                             console.log(err)
+                         })
+                         //.get names of recipients
+     }
+
+     useEffect(() => {
+        if (token) getConversations()
+    }, [token])
+
+    console.log(conversations)
     
 
 
@@ -54,7 +68,7 @@ export function ConversationsProvider( { idUser, children } ) {
     //THIS GONNA BE USECALLBACK, because we don't want this function to be rebuild on every rerender
     const addMessageToConversation = useCallback(({ recipients, text, sender }) => {
         setConversations(prevConversations => {
-            let madeChange = false //evaluates whether a new conversations has to be created or whethe the message is to be added to an existing conversation (if false, create; if true, add)
+            let madeChange = false //evaluates whether a new conversations has to be created or whether the message is to be added to an existing conversation (if false, create; if true, add)
             const newMessage = { sender, text }
             
             //see whether recipients matches conversations and update this conversation
@@ -96,25 +110,22 @@ export function ConversationsProvider( { idUser, children } ) {
         addMessageToConversation({ recipients, text, sender: id})
     }
 
-    useEffect(() => {
-        //getting conversations from database!!
-    })
 
     //recipient is only an id. we also want to get the name of the recipient
     const formattedConversations = conversations.map((conversation, index) => {
         const recipients = conversation.recipients.map(recipient => {
             const contact = contacts.find(contact => {
-                return contact.id === recipient
+                return contact._id === recipient
             })
-            const name = (contact && contact.name) || recipient
-            return { id: recipient, name} //i would have chosen 'name: name' here
+            const name = (contact && contact.username) || recipient
+            return { id: recipient, name}
         })
 
         const messages = conversation.messages.map(message => {
             const contact = contacts.find(contact => {
-                return contact.id === message.sender
+                return contact._id === message.sender
             })
-            const name =  (contact && contact.name) || message.sender
+            const name =  (contact && contact.username) || message.sender
             const fromMe = id === message.sender
             return { ...message, senderName: name, fromMe }
         })
