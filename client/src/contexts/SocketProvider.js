@@ -10,15 +10,27 @@ export function useSocket() {
 export function SocketProvider({ idUser, children }) {
   const [socket, setSocket] = useState()
   const id = idUser._id
-  console.log(id)
-  console.log(socket)
+  //console.log(id)
+  //console.log(socket)
 
   useEffect(() => {
+    /*const newSocket = io(
+      'http://localhost:3002/',
+      { query: { id } }
+    )*/
+
+
+
     const newSocket = io(
-      'http://localhost:5000/',
+      process.env.REACT_APP_WSSERVER,
       { query: { id } }
     )
-    setSocket(newSocket)
+
+    newSocket.on('connect', () => {
+      console.info('connected');
+    });
+
+    setSocket(newSocket);
 
     return () => newSocket.close()
   }, [id])

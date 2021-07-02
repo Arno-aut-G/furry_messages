@@ -1,30 +1,26 @@
 import React, { useState, useRef } from 'react'
-
-import { Form, Button } from 'react-bootstrap'
+import { Modal, Form, Button } from 'react-bootstrap'
 import { useContacts } from '../contexts/ContactsProvider'
-import { useConversations } from '../contexts/ConversationsProvider' // not sure whether i need this
+import { useConversations } from '../contexts/ConversationsProvider' // not sure whether i need this here
+import SearchModal from './SearchModal'
 
-export default function Contacts() {
-    const languagesRef = useRef()
-    const citiesRef = useRef()
-
+export default function Contacts({ setActiveKey, conversationsKey }) {
+    const [modalOpen, setModalOpen] = useState(false)
     const [selectedContactIds, setSelectedContactIds] = useState([])
-    const { contacts, setQueryString } = useContacts()
-    const { createConversation } = useConversations()
+    const { contacts } = useContacts()
+    const { conversations, createConversation, selectConversationIndex } = useConversations()
 
     const handleSubmit = (e) => {
         e.preventDefault()
 
         createConversation(selectedContactIds)
-        //closeModal()
+        selectConversationIndex(conversations.length)
+        setActiveKey(conversationsKey)
     }
 
-    const querySubmit = (e) => {
-        e.preventDefault()
-
-        const newQueryString = { params: {languages: languagesRef, city_in_germany: citiesRef}}
-        setQueryString(newQueryString)
-    }
+    const closeModal = () => {
+        setModalOpen(false)
+      }
 
 
 
@@ -43,44 +39,38 @@ export default function Contacts() {
 
     return (
         <>
-        <Form onSubmit={querySubmit}>
-            <Form.Group>
-                <Form.Label>By Language</Form.Label>
-                <Form.Control as="select">
-                    <option value=''></option>
-                    <option>English</option>
-                    <option>German</option>
-                    <option>Spanish</option>
-                    <option>Arabic</option>
-                    <option>Turkish</option>
-                </Form.Control>
-                <Form.Label>By City</Form.Label>
-                <Form.Control as="select">
-                    <option value=''></option>
-                    <option>Berlin</option>
-                    <option>Frankfurt am Main</option>
-                    <option>Hamburg</option>
-                    <option>Stuttgart</option>
-                    <option>Munich</option>
-                </Form.Control>
-                </Form.Group>
-                <Button type="submit">
-                    Search
-                </Button> 
-        </ Form>
-        <Form onSubmit={handleSubmit}>
-                    {contacts.map(contact => (
-                        <Form.Group key={contact._id}>
-                            <Form.Check
-                                type='checkbox'
-                                value={selectedContactIds.includes(contact._id)}
-                                label={contact.username}
-                                onChange={() => handleCheckboxChange(contact._id)}
-                            />
-                        </Form.Group>
-                    ))}
-                    <Button type='submit'>Komunikate</Button>
-                </Form>
+        <div className='d-flex flex-column flex-grow-1'>
+            <div className='flex-grow-1 overflow-auto'>
+                <Form onSubmit={handleSubmit}>
+                            {contacts.map(contact => (
+                                <Form.Group key={contact._id}>
+                                    <Form.Check
+                                        type='checkbox'
+                                        value={selectedContactIds.includes(contact._id)}
+                                        label={contact.username}
+                                        onChange={() => handleCheckboxChange(contact._id)}
+                                    />
+                                </Form.Group>
+                            ))}
+                            <div style={{position: 'sticky', top: 0, zIndex: 10,
+    backgroundColor: 'white'}} className='p-2 border border-top border-right small'>
+                <Button type='submit' size="lg" block>Komunikate</Button>
+                <br/>
+                <Button onClick={() => setModalOpen(true)} block>Search Komunikators</Button>
+        </div>
+                    </Form>
+            </div>
+        </div>
+
+            
+
+            <Modal show={modalOpen} onHide={closeModal}>
+                <SearchModal closeModal={closeModal} />               
+            </Modal>
+
         </>
     )
 }
+
+
+

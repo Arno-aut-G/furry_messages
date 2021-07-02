@@ -26,7 +26,6 @@ export default function OpenConversations() {
         <div className='d-flex flex-column flex-grow-1'>
             <div className='flex-grow-1 overflow-auto'>
                 <div className='d-flex flex-column align-items-start justify-content-end px-3'> 
-                {/* without h-100, new messages appear on top, but with it, the messages are not scrollable */}
                     {selectedConversation.messages.map((message, index) => {
                         const lastMessage = selectedConversation.messages.length - 1 === index
                         return (
@@ -55,7 +54,7 @@ export default function OpenConversations() {
                                 value={text}
                                 ref={textRef}
                                 onChange={() => setText(textRef.current.value)}
-                                style={{ height: '75px', resize: 'none'}}
+                                style={{ height: '100px', resize: 'none'}}
                             />
                             <InputGroup.Append>
                                 <Button type="submit">Send</Button>

@@ -21,7 +21,7 @@ export default function Sidebar({ idUser }) {
                         <Nav.Link eventKey={CONVERSATIONS_KEY}>Conversations</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link eventKey={CONTACTS_KEY}>Contacts</Nav.Link>
+                        <Nav.Link eventKey={CONTACTS_KEY}>Komunikators</Nav.Link>
                     </Nav.Item>
                 </Nav>
                 <Tab.Content className='border border-right overflow-auto flex-grow-1'> 
@@ -30,10 +30,10 @@ export default function Sidebar({ idUser }) {
                         <Conversations />
                     </Tab.Pane>
                     <Tab.Pane eventKey={CONTACTS_KEY}>
-                        <Contacts />
+                        <Contacts setActiveKey={setActiveKey} conversationsKey={CONVERSATIONS_KEY}/>
                     </Tab.Pane>
                 </Tab.Content>
-                <div className='p-2 border border-top border-right small'>
+                <div className='p-2 border border-top border-right small' style={{'border-width': 'medium'}}>
                     Username: <span className='text-muted'>{idUser.username}</span>
                 </div>
             </Tab.Container>
